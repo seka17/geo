@@ -51,7 +51,7 @@ func (c *Client) GetOnline(point geo.Point, profile Profile) ([]byte, error) {
 	query.Set("lon", floatToStr(point.Lon()))
 	// добавляем погрешность расстояния
 	if Pacc >= 0 && Pacc != 300 && Pacc < 6000 {
-		query.Set("pacc", floatToStr(Pacc))
+		query.Set("pacc", floatToStr(Pacc*1000))
 	}
 	// добавляем параметры профиля
 	if len(profile.Datatype) > 0 {
