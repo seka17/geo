@@ -65,8 +65,13 @@ func main() {
 
 	// инициализируем клиента для получения инициализационной информации о GPS
 	client := ublox.NewClient("I6KKO4RU_U2DclBM9GVyrA")
+	// добавляем профиль устройства: от этого зависит формат возвращаемых данных
+	profile := ublox.Profile{
+		Datatype: []string{"eph"},
+		Format:   "aid",
+	}
 	// инициализируем кеш для инициализационной информации о GPS
-	cache := ublox.NewCache(client, ublox.DefaultProfile, time.Minute*60, 200)
+	cache := ublox.NewCache(client, profile, time.Minute*60, 200)
 	// добавляем подписку
 	ephSubs, err := nc.Subscribe(serviceNameEph, func(msg *nats.Msg) {
 		// TODO: добавить разбор реальных координат из сообщения

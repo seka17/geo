@@ -57,8 +57,8 @@ func (c *Client) GetOnline(point geo.Point, profile Profile) ([]byte, error) {
 	if len(profile.Datatype) > 0 {
 		query.Set("datatype", strings.Join(profile.Datatype, ","))
 	}
-	if len(profile.Format) > 0 {
-		query.Set("format", strings.Join(profile.Format, ","))
+	if profile.Format != "" {
+		query.Set("format", profile.Format)
 	}
 	if len(profile.GNSS) > 0 {
 		query.Set("gnss", strings.Join(profile.GNSS, ","))
