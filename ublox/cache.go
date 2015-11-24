@@ -3,6 +3,7 @@ package ublox
 import (
 	"container/list"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/mdigger/geo"
@@ -16,6 +17,7 @@ type Cache struct {
 	duration    time.Duration // продолжительность кеширования данных
 	profile     Profile       // профиль устройтва
 	maxDistance float64       // максимальная дистанция от уже существующей точки в кеше
+	mu          sync.Mutex
 }
 
 // NewCache возвращает новый инициализированный кеш с данными.
@@ -40,6 +42,8 @@ func NewCache(client *Client, profile Profile, duration time.Duration, maxDistan
 // кеша.
 func (c *Cache) Get(point geo.Point) ([]byte, error) {
 	// перебираем данные кеша
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	for e := c.cache.Front(); e != nil; e = e.Next() {
 	removed:
 		item := e.Value.(itemElement) // получаем элемент кеша
