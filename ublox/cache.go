@@ -41,9 +41,10 @@ func NewCache(client *Client, profile Profile, duration time.Duration, maxDistan
 // находится на удалении от закешированной не более, чем в указанном в maxDistance-свойстве самого
 // кеша.
 func (c *Cache) Get(point geo.Point) ([]byte, error) {
-	// перебираем данные кеша
+	// TODO: ох, не нравится мне глобальная блокировка, но сейчас лень писать нормально...
 	c.mu.Lock()
 	defer c.mu.Unlock()
+	// перебираем данные кеша
 	for e := c.cache.Front(); e != nil; e = e.Next() {
 	removed:
 		item := e.Value.(itemElement) // получаем элемент кеша

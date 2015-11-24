@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/mdigger/geotools"
+	"github.com/mdigger/geo"
 )
 
 var (
 	token     = "ADD_YOUR_TOKEN"
-	pointWork = geotools.NewPoint(55.715084, 37.57351)  // работа
-	pointHome = geotools.NewPoint(55.765944, 37.589248) // дом
+	pointWork = geo.NewPoint(55.715084, 37.57351)  // работа
+	pointHome = geo.NewPoint(55.765944, 37.589248) // дом
 )
 
 func TestClient(t *testing.T) {
