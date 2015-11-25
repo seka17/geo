@@ -63,6 +63,9 @@ func (c *Client) GetOnline(point geo.Point, profile Profile) ([]byte, error) {
 	if len(profile.GNSS) > 0 {
 		query.Set("gnss", strings.Join(profile.GNSS, ","))
 	}
+	if profile.FilterOnPos {
+		query.Set("filteronpos", "")
+	}
 
 	var n = 0 // номер сервера для запроса из списка
 repeatOnTimeout:

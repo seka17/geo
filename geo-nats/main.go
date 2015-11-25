@@ -67,8 +67,9 @@ func main() {
 	client := ublox.NewClient("I6KKO4RU_U2DclBM9GVyrA")
 	// добавляем профиль устройства: от этого зависит формат возвращаемых данных
 	profile := ublox.Profile{
-		Datatype: []string{"eph"},
-		Format:   "aid",
+		Datatype:    []string{"eph"},
+		Format:      "aid",
+		FilterOnPos: true,
 	}
 	// инициализируем кеш для инициализационной информации о GPS
 	cache := ublox.NewCache(client, profile, time.Minute*60, 200)

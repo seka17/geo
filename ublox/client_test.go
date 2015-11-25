@@ -20,14 +20,14 @@ func TestClient(t *testing.T) {
 		t.Fatal(err)
 	}
 	fmt.Println(data)
-	data, err = ubox.GetOnline(pointHome, DefaultProfile)
-	if err != nil {
-		t.Fatal(err)
-	}
-	fmt.Println(data)
-	data, err = ubox.GetOnline(geotools.Point{}, DefaultProfile)
-	if err != nil {
-		t.Fatal(err)
-	}
-	fmt.Println(data)
+	// data, err = ubox.GetOnline(pointHome, DefaultProfile)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// fmt.Println(data)
+	// data, err = ubox.GetOnline(geotools.Point{}, DefaultProfile)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// fmt.Println(data)
 }
