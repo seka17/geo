@@ -1,29 +1,37 @@
 package main
 
 import (
+	"encoding/json"
+	"github.com/mdigger/geo"
+	"github.com/mdigger/geo/lbs"
+	"github.com/mdigger/geo/ublox"
+	"github.com/nats-io/nats"
 	"log"
 	"math"
 	"os"
 	"os/signal"
 	"time"
-
-	"github.com/mdigger/geo"
-	"github.com/mdigger/geo/lbs"
-	"github.com/mdigger/geo/ublox"
-	"github.com/nats-io/nats"
 )
 
 // Названия (subjects) сервисов для NATS.
 const (
 	serviceNameEph = "eph"
 	serviceNameLBS = "lbs"
+	natsServer     = "188.166.38.202:1234"
 )
+
+// Данные из прокси сервера
+type MsgFromEph struct {
+	Lon float64
+	Lat float64
+}
 
 func main() {
 	// TODO: по-хорошему, нужен, конечно, конфигурационный файл со всеми опциями
 	log.Println("Connecting to NATS...")
 	// подключаемся к NATS-серверу
-	nc, err := nats.DefaultOptions.Connect()
+	//nc, err := nats.DefaultOptions.Connect()
+	nc, err := nats.Connect("nats://" + natsServer)
 	if err != nil {
 		log.Println("Error NATS Connect:", err)
 		return
@@ -75,9 +83,27 @@ func main() {
 	cache := ublox.NewCache(client, profile, time.Minute*60, 200)
 	// добавляем подписку
 	ephSubs, err := nc.Subscribe(serviceNameEph, func(msg *nats.Msg) {
-		// TODO: добавить разбор реальных координат из сообщения
-		point := geo.NewPoint(55.715084, 37.57351) // создаем координаты
-		data, err := cache.Get(point)              // получаем данные из кеша
+		// разбор данных
+		var tmp MsgFromEph
+		var point geo.Point
+		if err = json.Unmarshal(msg.Data, &tmp); err != nil {
+			// пришел lbs
+			req, err := lbs.Parse(string(msg.Data)) // разбираем полученные данные
+			if err != nil {
+				log.Println("Error parse LBS:", err)
+				return
+			}
+			point = db.Find(req) // получаем точку по координатам
+			if math.IsNaN(point.Lat()) || math.IsNaN(point.Lon()) {
+				log.Println("Error searching LBS:", err)
+				// TODO: наверное, нужно отдавать пустой ответ
+				return
+			}
+		} else {
+			// пришли долгота и широта
+			point = geo.NewPoint(tmp.Lat, tmp.Lon) // создаем координаты
+		}
+		data, err := cache.Get(point) // получаем данные из кеша
 		if err != nil {
 			log.Println("Error Get ephemeridos:", err)
 			// TODO: наверное, нужно отдавать пустой ответ
