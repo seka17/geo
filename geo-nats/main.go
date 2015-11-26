@@ -30,11 +30,15 @@ func main() {
 	// TODO: по-хорошему, нужен, конечно, конфигурационный файл со всеми опциями
 	log.Println("Connecting to NATS...")
 	// подключаемся к NATS-серверу
-	//nc, err := nats.DefaultOptions.Connect()
 	nc, err := nats.Connect("nats://" + natsServer)
 	if err != nil {
-		log.Println("Error NATS Connect:", err)
-		return
+		// потом убрать
+		nc, err = nats.DefaultOptions.Connect()
+		if err != nil {
+			log.Println("Error NATS Connect:", err)
+			return
+		}
+
 	}
 	// TODO: добавить encoder сообщений (GOB?)
 	defer nc.Close()
