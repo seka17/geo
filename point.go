@@ -50,5 +50,5 @@ func (p Point) Distance(p2 Point) float64 {
 
 // String возвращает строковое представление точки.
 func (p Point) String() string {
-	return fmt.Sprintf("[%f, %f]", p[0], p[1])
+	return fmt.Sprintf("[%f,%f]", p[0], p[1])
 }

@@ -91,23 +91,11 @@ func main() {
 		var tmp MsgFromEph
 		var point geo.Point
 		if err = json.Unmarshal(msg.Data, &tmp); err != nil {
-			// пришел lbs
-			req, err := lbs.Parse(string(msg.Data)) // разбираем полученные данные
-			if err != nil {
-				log.Println("Error parse LBS:", err)
-				return
-			}
-			point = db.Find(req) // получаем точку по координатам
-			if math.IsNaN(point.Lat()) || math.IsNaN(point.Lon()) {
-				log.Println("Error searching LBS:", err)
-				// TODO: наверное, нужно отдавать пустой ответ
-				return
-			}
-		} else {
-			// пришли долгота и широта
-			point = geo.NewPoint(tmp.Lat, tmp.Lon) // создаем координаты
+			//TODO: отправлять ошибку
+			return
 		}
-		data, err := cache.Get(point) // получаем данные из кеша
+		point = geo.NewPoint(tmp.Lat, tmp.Lon) // создаем координаты
+		data, err := cache.Get(point)          // получаем данные из кеша
 		if err != nil {
 			log.Println("Error Get ephemeridos:", err)
 			// TODO: наверное, нужно отдавать пустой ответ
